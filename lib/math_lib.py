@@ -133,3 +133,55 @@ def norm_vector_III(V):
     return sum([(V[i][0]) ** 2 for i in range(len(V))]) ** 0.5
 
 
+# Lb 5
+
+
+def copy_matrix(M1):
+    (m1, n1) = get_shape(M1)
+    M2 = create_zero_matrix(n1, m1)
+    for i in range(m1):
+        for j in range(n1):
+            M2[i][j] = M1[i][j]
+    return M2
+
+
+def union_matrix(M1):
+    (m1, n1) = get_shape(M1)
+    M2 = create_zero_matrix(n1, m1)
+    for i in range(n1):
+        for j in range(m1):
+            M2[i][j] = algebraic_addition(M1, j, i)
+    return M2
+
+
+def inv_matrix(M1):
+    return mult_const_matrix(M1=union_matrix(M1), a=1 / det(M1))
+
+
+def algebraic_addition(M1, i, j):
+    (m1, n1) = get_shape(M1)
+    sign = (-1) ** (i + j + 2)
+    res = sign * det([row[:j] + row[j + 1:] for ir, row in enumerate(M1) if ir != i])
+    return res
+
+
+def det(M1):
+    res = 0
+    (m1, n1) = get_shape(M1)
+
+    assert m1 == n1
+
+    if m1 == n1 == 1:
+        return M1[0][0]
+
+    if m1 == n1 == 2:
+        return M1[0][0] * M1[1][1] - M1[0][1] * M1[1][0]
+
+    M2 = M1[1:]
+    for i in range(n1):
+        # sign = (-1) ** (i + 2)
+
+        # res += M1[0][i] * sign * det([row[:i] + row[i+1:] for row in M2])
+        res += M1[0][i] * algebraic_addition(M1, 0, i)
+
+    return res
