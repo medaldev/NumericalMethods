@@ -138,7 +138,7 @@ def norm_vector_III(V):
 
 def copy_matrix(M1):
     (m1, n1) = get_shape(M1)
-    M2 = create_zero_matrix(n1, m1)
+    M2 = create_zero_matrix(m1, n1)
     for i in range(m1):
         for j in range(n1):
             M2[i][j] = M1[i][j]
@@ -155,7 +155,10 @@ def union_matrix(M1):
 
 
 def inv_matrix(M1):
-    return mult_const_matrix(M1=union_matrix(M1), a=1 / det(M1))
+    M_det = det(M1)
+    if M_det == 0:
+        raise Exception("Для построения обратной матрицы детерминант должен быть отличен от нуля")
+    return mult_const_matrix(M1=union_matrix(M1), a=1 / M_det)
 
 
 def algebraic_addition(M1, i, j):
