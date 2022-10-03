@@ -188,3 +188,19 @@ def det(M1):
         res += M1[0][i] * algebraic_addition(M1, 0, i)
 
     return res
+
+def left_low_triangle(M1):
+    (m1, n1) = get_shape(M1)
+    M2 = create_zero_matrix(n1, m1)
+    for i in range(n1):
+        for j in range(m1):
+            M2[i][j] = M1[i][j] if j < i else 0
+    return M2
+
+def right_top_triangle(M1):
+    (m1, n1) = get_shape(M1)
+    M2 = create_zero_matrix(n1, m1)
+    for i in range(n1):
+        for j in range(m1):
+            M2[i][j] = M1[i][j] if j >= i else 0
+    return M2
