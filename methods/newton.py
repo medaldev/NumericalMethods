@@ -28,4 +28,4 @@ def newton(x0, f, F, eps=None, max_iter=-1, simple=False):
             if eps_local <= eps:
                 break
 
-    return x, eps_local, i, eps_values
+    return x, eps_local, i, eps_values, F(*x[0], *x[1])
