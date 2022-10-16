@@ -47,7 +47,7 @@ def newton(func, a, b, n):
     xs = arange(a, b, h)
     result = 0
 
-    for i in range(n - 3):
+    for i in range(0, n - 3, 3):
         result += (3 * h / 8) * (func(xs[i]) + 3 * func(xs[i + 1]) + 3 * func(xs[i + 2]) + func(xs[i + 3]))
 
     return result
@@ -65,10 +65,10 @@ def chebishev(func, A, B, m):
 
         a, b = xs[j], xs[j + 1]
 
-        for i in range(len(ts)):
-            result += func(((b + a) / 2) + ((b - a) / 2) * ts[i])
+        for i in range(n):
+            result += ((b - a) / n) * func(((b + a) / 2) + ((b - a) / 2) * ts[i])
 
-        result *= ((b - a) / 2)
+        #result *=
 
     return result
 
@@ -94,9 +94,8 @@ def gauss(func, A, B, m, eps):
         a, b = xs[j], xs[j + 1]
 
         for i in range(n):
-            result += A_coefs[i][0] * func(((b + a) / 2) + ((b - a) / 2) * ts[i])
+            result += ((b - a) / 2) * (A_coefs[i][0] * func(((b + a) / 2) + ((b - a) / 2) * ts[i]))
 
-        result *= ((b - a) / 2)
 
     return result
 
@@ -105,15 +104,32 @@ def list_to_vector(lst):
     return [[el] for el in lst]
 
 
-ifunc = lambda x: x * 2
+
+ifunc = lambda x: x ** 2
 
 fr = 1
 to = 4
 
-segments = 18
+segments = 90
 
-print(trapeze(ifunc, fr, to, segments))
-print(simpson(ifunc, fr, to, segments))
-print(newton(ifunc, fr, to, segments))
-print(chebishev(ifunc, fr, to, segments))
-print(gauss(ifunc, fr, to, segments, 1e-3))
+expectation = 21
+
+import pandas as pd
+
+data = pd.DataFrame()
+
+data["Метод"] = ["Метод трапеций", "Метод Симпсона", "Метод Ньютона", "Метод Чебышева", "Метод Гаусса"]
+data["Точное"] = [expectation for _ in range(len(data["Метод"]))]
+
+for n_seg in [9, 18, 27, 81, 99]:
+    data[f"N={n_seg}"] = [
+        trapeze(ifunc, fr, to, n_seg),
+        simpson(ifunc, fr, to, n_seg if n_seg % 2 == 0 else n_seg-1),
+        newton(ifunc, fr, to, n_seg),
+        chebishev(ifunc, fr, to, n_seg),
+        gauss(ifunc, fr, to, n_seg, 1e-3)
+    ]
+
+print(data)
+
+
